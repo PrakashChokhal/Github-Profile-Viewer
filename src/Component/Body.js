@@ -4,7 +4,8 @@ import {
   RefreshCw,
   Sparkles,
   Compass,
-  ArrowLeft
+  ArrowLeft,
+  Zap
 } from "lucide-react";
 import SearchBar from "./SearchBar";
 import ProfileCard from "./ProfileCard";
@@ -39,9 +40,9 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
   const [recentSearches, setRecentSearches] = useState(() => {
     try {
       const saved = localStorage.getItem(RECENT_KEY);
-      return saved ? JSON.parse(saved) : ["torvalds", "gaearon", "shadcn"];
+      return saved ? JSON.parse(saved) : ["PrakashChokhal", "torvalds", "gaearon", "shadcn"];
     } catch {
-      return ["torvalds", "gaearon", "shadcn"];
+      return ["PrakashChokhal", "torvalds", "gaearon", "shadcn"];
     }
   });
 
@@ -68,9 +69,7 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
       const updated = [username, ...filtered].slice(0, 8);
       try {
         localStorage.setItem(RECENT_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error("Failed to save recent search", e);
-      }
+      } catch (e) {}
       return updated;
     });
   }, []);
@@ -163,10 +162,9 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
         ]);
 
         setActiveUser(profileData);
-        setUserRepos(reposData);
+        setUserRepos(reposData || []);
         saveRecentSearch(profileData.login);
       } catch (err) {
-        console.error("Error loading user profile:", err);
         setError(err.message || "Failed to load GitHub profile. Please check the username.");
         setActiveUser(null);
         setUserRepos([]);
@@ -189,7 +187,6 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
       setDiscoveredUsers(results.items || []);
       setDiscoveryTitle(`Developers matching "${query}"`);
     } catch (err) {
-      console.error("Error discovering users:", err);
       setError(err.message || "Failed to discover developers. Please try again.");
       setDiscoveredUsers([]);
     } finally {
@@ -208,12 +205,11 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
 
   // Initial load
   useEffect(() => {
-    // Check URL hash for direct user linking (e.g., #gaearon or #torvalds)
     const hash = window.location.hash.replace("#", "").trim();
     if (hash) {
       loadUserProfile(hash);
     } else {
-      loadUserProfile("torvalds");
+      loadUserProfile("PrakashChokhal");
     }
   }, [loadUserProfile]);
 
@@ -235,21 +231,31 @@ function Body({ theme, isBookmarksOpen, setIsBookmarksOpen }) {
           isLoading={isLoading}
         />
 
+        {/* Demo Mode Notice if Active */}
+        {activeUser && activeUser.isDemoData && (
+          <div className="demo-mode-badge-banner">
+            <Zap size={16} className="demo-icon" />
+            <span>
+              <strong>Demo/Offline Mode:</strong> GitHub public IP rate limit is active. Showing pre-cached profile data for @{activeUser.login}.
+            </span>
+          </div>
+        )}
+
         {/* Global Error Banner */}
         {error && (
           <div className="error-banner">
             <AlertCircle size={22} className="error-icon" />
             <div className="error-content">
-              <h3>Oops! Something went wrong</h3>
+              <h3>Unable to fetch from GitHub API</h3>
               <p>{error}</p>
             </div>
             <button
               type="button"
               className="error-retry-btn"
-              onClick={() => (searchMode === "user" ? loadUserProfile("torvalds") : setSearchMode("user"))}
+              onClick={() => loadUserProfile("PrakashChokhal")}
             >
               <RefreshCw size={14} />
-              <span>Reset to Linus Torvalds</span>
+              <span>Load Prakash Chokhal Profile</span>
             </button>
           </div>
         )}

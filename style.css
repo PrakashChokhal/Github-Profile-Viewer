@@ -1593,6 +1593,23 @@ input, select {
 /* ==========================================================================
    ERROR BANNER & EMPTY STATES
    ========================================================================== */
+.demo-mode-badge-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--warning-subtle);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  color: var(--warning);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.demo-icon {
+  flex-shrink: 0;
+}
+
 .error-banner {
   display: flex;
   align-items: center;

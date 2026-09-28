@@ -5,11 +5,13 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-
   "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "lucide-react": "^1.48.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
